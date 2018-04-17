@@ -1,0 +1,38 @@
+{
+  "name": "github-review-filter",
+  "version": "0.1.0",
+  "description": "Chrome extension to filter files in GitHub code review using glob",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "node utils/build.js",
+    "start": "node utils/webserver.js",
+    "lint": "eslint src",
+    "test": "yarn run lint"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.17",
+    "copy-webpack-plugin": "^4.2.0",
+    "css-loader": "^0.25.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "file-loader": "^0.11.2",
+    "fs-extra": "^0.30.0",
+    "html-loader": "^0.4.5",
+    "html-webpack-plugin": "2.24.1",
+    "style-loader": "^0.13.0",
+    "webpack": "2.2.1",
+    "webpack-dev-server": "^2.3.0",
+    "write-file-webpack-plugin": "3.4.2"
+  },
+  "repository": "git://github.com/andersonba/github-review-filter",
+  "author": "Anderson de Oliveira <andersonba@me.com>",
+  "license": "MIT",
+  "dependencies": {
+    "debounce": "^1.1.0",
+    "delegated-events": "^1.0.6",
+    "github-injection": "^1.0.1",
+    "is-glob": "^4.0.0",
+    "minimatch": "^3.0.4"
+  }
+}
