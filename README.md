@@ -2,7 +2,11 @@
 
 Speed up how you review PRs filtering files based on glob pattern.
 
-You can split your code review into parts based on:
+[![Chrome Web Store](https://developer.chrome.com/webstore/images/ChromeWebStore_Badge_v2_206x58.png)](https://chrome.google.com/webstore/detail/github-review-filter/gnpcfigiidmljgiidkhmmcgbfkolnacg)
+
+## Features
+
+Split your code review into parts based on:
 
 - Components (eg: `**/components/Header/**`)
 - Without tests (eg: `!**/__tests__/**`)
@@ -10,8 +14,12 @@ You can split your code review into parts based on:
 - No jest snapshot (eg: `!*.snapshot`)
 - etc...
 
-### Filter files in PR review
+Also, share the filters using links.
+
+## Preview
+
+#### Filter files in PR review
 ![Filter from PR](resources/filter-from-pr.gif)
 
-### Share filters using links
+#### Share filters using links
 ![Share links](resources/share-links.gif)
