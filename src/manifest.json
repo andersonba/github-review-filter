@@ -1,5 +1,6 @@
 {
   "name": "GitHub Review Filter",
+  "description": "Chrome extension to filter files in GitHub code review using glob",
   "icons": {
     "128": "icon.png"
   },
