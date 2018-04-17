@@ -11,34 +11,52 @@ const DEBOUNCE_TIME = 800;
 
 class Filter {
   constructor() {
-    this.tabNav = document.querySelector('.tabnav-pr');
-    this.diffBar = document.querySelector('.diffbar');
+    this.diffBar = null;
+    this.filterMenu = null;
+    this.total = null;
+    this.files = [];
+    this.filesTexts = [];
+    this.init();
+  }
+
+  init() {
+    this.mountFiles();
+    this.bindDOMObserver();
+
+    const tabs = document.querySelectorAll('.tabnav-pr .tabnav-tab');
+    if (tabs[FILE_CHANGES_TAB_IDX].classList.contains('selected')) {
+      this.diffBar = document.querySelector('.diffbar');
+      this.filterMenu = document.getElementById(FILTERS_TAB);
+
+      if (!this.filterMenu) {
+        this.createMenu();
+        this.filterMenu = document.getElementById(FILTERS_TAB);
+      }
+
+      this.bindSearchInput();
+      this.searchFromHash();
+    }
+  }
+
+  mountFiles() {
     this.files = Array.from(document.querySelectorAll('#files .file'))
       .map(element => ({
         element,
         text: element.querySelector('.file-info a').text,
       }));
     this.fileTexts = this.files.map(f => f.text);
-    this.filterMenu = null;
-    this.componentDidMount();
   }
 
-  componentDidMount() {
-    const tabs = this.tabNav.querySelectorAll('.tabnav-tab');
-    if (tabs[FILE_CHANGES_TAB_IDX].classList.contains('selected')) {
-      this.filterMenu = document.getElementById(FILTERS_TAB);
-
-      if (!this.filterMenu) {
-        this.createInput();
-        this.filterMenu = document.getElementById(FILTERS_TAB);
+  bindDOMObserver() {
+    document.addEventListener('DOMNodeInserted', ({ target }) => {
+      if (target.classList && target.classList.contains('file')) {
+        this.mountFiles();
+        this.searchFromHash();
       }
-
-      this.bindInput();
-      this.searchFromHash();
-    }
+    }, false);
   }
 
-  createInput() {
+  createMenu() {
     const div = document.createElement('div');
     div.classList.add('diffbar-item');
     div.insertAdjacentHTML('beforeend', `
@@ -69,32 +87,32 @@ class Filter {
     this.diffBar.insertBefore(div, this.diffBar.querySelector('.diffstat'));
   }
 
-  bindInput() {
+  bindSearchInput() {
     on('click', `#${FILTERS_TAB} button`, () => {
       this.diffBar.querySelector('.form-control').focus();
     });
 
     on('keydown', `#${FILTERS_TAB}-input`, debounce((ui => function keydown() {
-      ui.changeMenuLabel(this.value);
-      window.location.hash = this.value ? `filter-files=${this.value}` : '';
-
-      if (this.value) {
-        ui.filterFiles(this.value);
-      } else {
-        ui.reset();
+      ui.mountFiles();
+      if (!this.value) {
+        ui.resetSearch();
       }
+      window.location.hash = this.value ? `filter-files=${this.value}` : '';
     })(this)), DEBOUNCE_TIME);
   }
 
-  changeMenuLabel(value) {
-    if (this.filterMenu) {
-      this.filterMenu.querySelector('button strong').innerHTML = value
-        ? `Filtering files: ${value}`
-        : 'Filter files';
-    }
+  changeMenuLabel(search) {
+    const { total } = this;
+    const counter = total !== null
+      ? ` <span class="Counter Counter--gray-light">${total}</span>`
+      : '';
+
+    this.filterMenu.querySelector('button strong').innerHTML = (search
+      ? `Filtering files: ${search}`
+      : 'Filter files') + counter;
   }
 
-  filterFiles(search) {
+  searchFiles(search) {
     const matches = isGlob(search)
       ? minimatch.match(this.fileTexts, search, {
         matchBase: true,
@@ -103,13 +121,20 @@ class Filter {
       })
       : this.fileTexts.filter(t => t.includes(search));
 
+    let total = 0;
     this.files.forEach(({ text, element }) => {
       const matched = matches.includes(text);
       element.style.display = matched ? 'block' : 'none';
+      if (matched) {
+        total += 1;
+      }
     });
+    this.total = total;
   }
 
-  reset() {
+  resetSearch() {
+    this.total = null;
+    this.changeMenuLabel(null);
     this.files.forEach(({ element }) => {
       element.style.display = 'block';
     });
@@ -119,12 +144,14 @@ class Filter {
     const { hash } = window.location;
 
     if (URI_REGEX.test(hash)) {
-      const text = URI_REGEX.exec(hash)[1];
+      const text = decodeURIComponent(URI_REGEX.exec(hash)[1]).trim();
       const input = document.getElementById(`${FILTERS_TAB}-input`);
-      if (input && text) {
+      if (text) {
         input.value = text;
+        this.searchFiles(text);
         this.changeMenuLabel(text);
-        this.filterFiles(text);
+      } else {
+        this.resetSearch();
       }
     }
 
