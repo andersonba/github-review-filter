@@ -23,3 +23,6 @@ Also, share the filters using links.
 
 #### Share filters using links
 ![Share links](resources/share-links.gif)
+
+## Credits
+Inspered by [siggysamson's project](https://github.com/siggysamson/pr-file-filter-for-github)
