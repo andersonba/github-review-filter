@@ -93,7 +93,6 @@ class Filter {
     });
 
     on('keydown', `#${FILTERS_TAB}-input`, debounce((ui => function keydown() {
-      ui.mountFiles();
       if (!this.value) {
         ui.resetSearch();
       }
