@@ -6,8 +6,14 @@ import { on } from 'delegated-events';
 
 const FILTERS_TAB = 'gh-review-filter';
 const URI_REGEX = /^#filter-files=(.*)$/;
-const FILE_CHANGES_TAB_IDX = 2;
+const FILES_CHANGED_TABNAME = 'Files changed';
 const DEBOUNCE_TIME = 800;
+
+function findElementByText(selector, text) {
+  const els = document.querySelectorAll(selector);
+  return Array.prototype.filter.call(els, el =>
+    RegExp(text).test(el.textContent));
+}
 
 class Filter {
   constructor() {
@@ -23,8 +29,8 @@ class Filter {
     this.mountFiles();
     this.bindDOMObserver();
 
-    const tabs = document.querySelectorAll('.tabnav-pr .tabnav-tab');
-    if (tabs[FILE_CHANGES_TAB_IDX].classList.contains('selected')) {
+    const tabs = findElementByText('.tabnav-pr .tabnav-tab', FILES_CHANGED_TABNAME);
+    if (tabs.length && tabs[0].classList.contains('selected')) {
       this.diffBar = document.querySelector('.diffbar');
       this.filterMenu = document.getElementById(FILTERS_TAB);
 
