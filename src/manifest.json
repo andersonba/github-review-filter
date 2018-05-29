@@ -6,7 +6,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://github.com/*/*/pull/*"],
+      "matches": [
+        "*://github.com/*/*/pull/*",
+        "*://github.com/*/*/compare/*"
+      ],
       "js": ["index.bundle.js"]
     }
   ],
