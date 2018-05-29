@@ -6,15 +6,18 @@ Speed up how you review PRs filtering files based on glob pattern.
 
 ## Features
 
-Split your code review into parts based on:
+- **Split your code review into parts based on:**
+  - Components (eg: `**/components/Header/**`)
+  - Without tests (eg: `!**/__tests__/**`)
+  - File types (eg: `*.js`)
+  - No jest snapshot (eg: `!*.snapshot`)
 
-- Components (eg: `**/components/Header/**`)
-- Without tests (eg: `!**/__tests__/**`)
-- File types (eg: `*.js`)
-- No jest snapshot (eg: `!*.snapshot`)
-- etc...
+- **Supported pages:**
+  - Pull requests (`github.com/org/repo/pull/*/files`)
+  - Compare changes (`github.com/org/repo/compare/*`)
 
-Also, share the filters using links.
+- **Share the filters using links**
+  - `github.com/org/repo/pull/1/files#filter-files=PATTERN`
 
 ## Preview
 
